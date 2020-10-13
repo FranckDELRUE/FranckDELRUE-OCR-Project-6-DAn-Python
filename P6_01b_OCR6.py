@@ -62,8 +62,8 @@ def display_circles(pcs, n_comp, pca, axis_ranks, labels=None, label_rotation=0,
             plt.plot([0, 0], [-1, 1], color='grey', ls='--')
 
             # nom des axes, avec le pourcentage d'inertie expliqué
-            plt.xlabel('F{} ({}%)'.format(d1+1, round(100*pca.explained_variance_ratio_[d1],1)))
-            plt.ylabel('F{} ({}%)'.format(d2+1, round(100*pca.explained_variance_ratio_[d2],1)))
+            plt.ylabel('F{} ({}%)'.format(d1+1, round(100*pca.explained_variance_ratio_[d1],1)))
+            plt.xlabel('F{} ({}%)'.format(d2+1, round(100*pca.explained_variance_ratio_[d2],1)))
 
             plt.title("Cercle des corrélations (F{} et F{})".format(d1+1, d2+1))
             plt.show(block=False)
@@ -104,7 +104,7 @@ def display_factorial_planes(X_projected, n_comp, pca, axis_ranks, data, labels=
             # affichage des labels des points
             if labels is not None:
                 for i,(x,y) in enumerate(X_projected[:,[d1,d2]]):
-                    plt.text(x, y, labels[i],
+                    plt.text(x, y+0.1, labels[i],
                               fontsize='10', ha='center',va='center') 
                 
             # détermination des limites du graphique
@@ -117,8 +117,8 @@ def display_factorial_planes(X_projected, n_comp, pca, axis_ranks, data, labels=
             plt.plot([0, 0], [-100, 100], color='grey', ls='--')
 
             # nom des axes, avec le pourcentage d'inertie expliqué
-            plt.xlabel('F{} ({}%)'.format(d1+1, round(100*pca.explained_variance_ratio_[d1],1)))
-            plt.ylabel('F{} ({}%)'.format(d2+1, round(100*pca.explained_variance_ratio_[d2],1)))
+            plt.ylabel('F{} ({}%)'.format(d1+1, round(100*pca.explained_variance_ratio_[d1],1)))
+            plt.xlabel('F{} ({}%)'.format(d2+1, round(100*pca.explained_variance_ratio_[d2],1)))
 
             plt.title("Projection des individus (sur F{} et F{})".format(d1+1, d2+1))
             
@@ -175,3 +175,15 @@ def plotbox(df):
                 i = i + 1
 
             plt.show()
+            
+def lorenz(df):
+    dep = df.values
+    n = len(dep)
+    lorenz = np.cumsum(np.sort(dep)) / dep.sum()
+    lorenz = np.append([0],lorenz) # La courbe de Lorenz commence à 0
+    
+    AUC = (lorenz.sum() -lorenz[-1]/2 -lorenz[0]/2)/n # Surface sous la courbe de Lorenz. Le premier segment (lorenz[0]) est à moitié en dessous de 0, on le coupe donc en 2, on fait de même pour le dernier segment lorenz[-1] qui est à moitié au dessus de 1.
+    S = 0.5 - AUC # surface entre la première bissectrice et le courbe de Lorenz
+    gini = 2*S
+    
+    return (lorenz, n, gini)
