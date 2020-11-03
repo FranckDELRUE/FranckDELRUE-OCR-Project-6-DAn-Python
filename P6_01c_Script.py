@@ -1,5 +1,6 @@
 import sys
 import pandas as pd
+from numpy import around
 
 from sklearn.linear_model import LogisticRegression
 
@@ -21,5 +22,7 @@ model.fit(df_X, df_Y)
 
 # make predictions
 df_pred['is_genuine'] = model.predict(df_X_train)
+df_pred['False %'] = around(model.predict_proba(df_X_train)[:, 0], 3)
+df_pred['True %'] = around(model.predict_proba(df_X_train)[:, 1], 3)
 
-print(df_pred.iloc[:, -2:])
+print(df_pred.iloc[:, -4:])
